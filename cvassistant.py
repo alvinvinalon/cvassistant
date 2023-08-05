@@ -18,10 +18,6 @@ with st.sidebar:
     cv_function = st.selectbox("Select a function:", ["CV Reviewer", "CV Summarizer"], help="Select a function to perform on the CV.\nCV Reviewer: Review the CV and provide feedback.\nCV Summarizer: Summarize the CV.")
     cv_custom_prompt = "" # not used for this version.
 
-    if cv_function:
-        with st.expander("View the prompt for the selected function"):
-            st.write(generate_prompt_cv_function(cv_function, cv_custom_prompt))
-
     # Footer
     st.markdown(f"<small style='color: #000000;'>CV Assistant version 0.1</small>", unsafe_allow_html=True)
 

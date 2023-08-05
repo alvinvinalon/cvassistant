@@ -10,7 +10,6 @@ from langchain.schema import (
     AIMessage  
 )  
 import openai
-from modules.app_state import *
 from modules.app_helpers import *
 from dotenv import load_dotenv
 

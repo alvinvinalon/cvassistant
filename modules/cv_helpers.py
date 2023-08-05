@@ -3,17 +3,12 @@ import pdfplumber
 import base64
 import itertools
 import base64
-from azure.storage.blob import BlobServiceClient
-from azure.identity import DefaultAzureCredential
 from PyPDF2 import PdfReader
 from modules.openai_utils import *
 from modules.app_helpers import *
-from modules.app_logging import *
-import os
 from dotenv import load_dotenv
 from pptx import Presentation
 from dotenv import load_dotenv
-import logging
 
 load_dotenv()
 
@@ -61,37 +56,7 @@ def extract_text_from_pdf(source_file):
 
 def image_to_base64(image_path):
     with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode("utf-8")
-    
-# Function to upload a file to Azure Blob Storage
-def upload_file_to_azure_blob_storage(file, file_name, AZURE_STORAGE_CONNECTION_STRING, container_name):
-    try:
-        blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
-        container_client = blob_service_client.get_container_client(container_name)
-        blob_client = container_client.get_blob_client(file_name)
-
-        # Upload the file. Overwrite if exists
-        blob_client.upload_blob(file, overwrite=True)
-
-        return True
-    except Exception as e:
-        print(e)
-        print(f"Failed to upload file to Azure Blob Storage: {e}")
-        return False
-
-# Function to download a file from Azure Blob Storage
-def download_file_from_azure_blob_storage(file_name, AZURE_STORAGE_CONNECTION_STRING, container_name):
-    try:
-        blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
-        container_client = blob_service_client.get_container_client(container_name)
-        blob_client = container_client.get_blob_client(file_name)
-
-        # Download the file
-        downloaded_file = blob_client.download_blob()
-        return downloaded_file.readall()
-    except Exception as e:
-        print(f"Failed to download file from Azure Blob Storage: {e}")
-        return None
+        return base64.b64encode(img_file.read()).decode("utf-8")   
     
 # Create a function that generates a prompt for OpenAI's GPT model based on the selected CV function
 def generate_prompt_cv_function(cv_function, cv_custom_prompt=""):
@@ -100,10 +65,12 @@ def generate_prompt_cv_function(cv_function, cv_custom_prompt=""):
         prompt = cv_custom_prompt + "\n\n"
     else:
         if cv_function == "CV Reviewer":       
+            # Update this prompt to include the CV Reviewer instructions.
             prompt = (
+                "You are an expert Career Adviser.\n"
                 "Provide detailed feedback and additional recommendations about contents of the CV below. "
                 "State if the CV is well-written or not.\n"                
-                "This individual will work closely with cross-functional teams to design, develop, and maintain innovative software solutions"
+                "The owner of the CV is a Sofware Engineer with various experience in the IT industry.\n\n"
                 "Analyze the content of the CV based on the following recommendations:\n"        
                 " - The CV should be clear and concise.\n"
                 " - The CV should highlight the most important and relevant achievements.\n"
@@ -116,13 +83,28 @@ def generate_prompt_cv_function(cv_function, cv_custom_prompt=""):
                 " - The CV should contain any prior experience, even if they're not IT related.\n"  
                 " - The CV should contain educational achievements and awards.\n\n"
                 "Recommend brevity to make the CV easier to read and more appleaing to the readers.\n\n"
-                "Finally, choose 3 areas found in the CV and rewrite them to improve the content.\n\n")
+                "Finally, choose 3 areas found in the CV and rewrite them to improve the content.\n\n"
+                "Here's an example response:\n"
+                "[Well-Written CV]:This CV is well-written and concise. It highlights the most important and relevant achievements.\n"
+                "[Not a Well-Written CV]: This CV is not well-written as it lacks the most important and relevant achievements.\n\n"
+                "[Areas for Improvement]:\n"
+                "1. [provide recommended rewrite for first area that can be improved].\n"
+                "2. [provide recommended rewrite for second area that can be improved].\n"
+                "3. [provide recommended rewrite for second area that can be improved].\n\n"
+                "[Conclusion]: This is an example conclusion.\n")
         elif cv_function == "CV Summarizer":
             prompt = (
-                    "Summarize in bullet points the contents of the CV below.\n"
+                    "Below is a CV content. Summarize in bullet points the contents of the CV below.\n"
                     "Include the most important information about the person's CV.\n"
                     "Use complete sentences and proper grammar.\n"
-                    "Mention all Achievements, Technical Skills, Certifications, and Experience of the person.\n")
+                    "Extract all Achievements, Technical Skills, Certifications, and Experience of the person.\n\n"
+                    "Example of response:\n"
+                    "[Summary of Professional Background]:\n"
+                    "[Summary of Technical Skills]:\n"
+                    "1. Technical Skill in bullet list \n"
+                    "2. Certifications in bullet list\n"
+                    "3. Experience in bullet list\n"
+                    "4. [All other relevant information] in bullet list\n\n")
         elif cv_function == "CV Analyzer":
             prompt = """
                     You are evaluating the CV of Software Engineering Candidates.\n                    

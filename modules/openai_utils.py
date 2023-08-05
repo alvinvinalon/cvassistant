@@ -12,8 +12,7 @@ def generate_prompt_cv_reviewer(prompt, data, function, custom_prompt=""):
     cv_function_prompt = generate_prompt_cv_function(function, custom_prompt)
     
     prompt = (
-        f"{cv_function_prompt}\n"
-        f"{prompt}\n" 
+        f"{cv_function_prompt}\n" 
         "# Start of CV:\n"  
         f"{data}"
         "# End of CV:"
@@ -37,7 +36,7 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
     response = openai.Completion.create(
         engine=os.environ.get("OPENAI_API_ENGINE"),
         prompt=prompt_question,
-        temperature=0.3,
+        temperature=0.1,
         max_tokens=max_tokens,
         top_p=1,
         frequency_penalty=0,
