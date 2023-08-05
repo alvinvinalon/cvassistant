@@ -1,0 +1,17 @@
+[theme]
+base = "light"
+primaryColor = "#3E9ACD"
+backgroundColor = "#1E1E1E"
+secondaryBackgroundColor = "#31333F"
+textColor = "#FAFAFA"
+font = "sans serif"
+
+[server]  
+port = 8501  
+enableCORS = false
+
+[logger]
+level = "info"
+
+
+

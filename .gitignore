@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+
+# Build output
+build/
+dist/
+*.egg-info/
+
+# Virtual environment
+venv/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Personal Environment files
+.env
