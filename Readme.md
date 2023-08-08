@@ -34,9 +34,13 @@ Visit the official website: https://streamlit.io/
 
 Replace the values for OPENAI_API_BASE AND OPENAI_API_KEY  (The values must come from your Azure OpenAI Service)
 
-4. Run ```streamlit run cvassistant.py``` in the VS Code terminal
+4. Run ```streamlit run cvassistant.py``` in the VS Code terminal (make sure your ```venv``` is activated)
 
 The web app will launch on your default browser.
 
 5. Select a function: CV Reviewer or CV Summarizer
+
+6. To upload your CV, click on the 'Browse Files' button and select your file. Please note that the application currently only supports PPT, PPTX, and PDF file types.
+
+Once you've uploaded your file, the application will extract the text and provide feedback on the contents. This will help you identify areas for improvement and ensure your CV is as effective as possible.
 
