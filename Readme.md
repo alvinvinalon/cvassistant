@@ -6,10 +6,10 @@ Can be configured to use GPT-3.5 Turbo, but if you get access to GPT-4 deploymen
 Visit the official website: https://streamlit.io/
 
 ## Pre-requisites
-- Python 3.11.3 and pip. You can download the latest version of Python from the official website (https://www.python.org/downloads/). 
+- Python 3.11+ and pip. You can download the latest version of Python from the official website (https://www.python.org/downloads/). 
 - An Azure Subscription with Azure OpenAI Service provisioned.
 - OpenAI model deployment. (https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal)
-- Create a deployment model called "chat" or use your own name (make sure you update it in the .env file.)
+- Create a deployment called "davinci" based off the text-davinci-003 model or use your own name (make sure you update it in the .env file.)
 - Visual Studio Code
 
 ## How to run locally
