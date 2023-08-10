@@ -12,7 +12,7 @@ def generate_prompt_cv_reviewer(prompt, data, function, custom_prompt=""):
     cv_function_prompt = generate_prompt_cv_function(function, custom_prompt)
     
     prompt = (
-        f"{cv_function_prompt}\n" 
+        f"{cv_function_prompt}\n\n" 
         "# Start of CV contents:\n"  
         f"{data}"
         "# End of CV content:"
@@ -28,9 +28,12 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
     openai.api_type = os.environ.get("OPENAI_API_TYPE")
     openai.api_base = os.environ.get("OPENAI_API_BASE")
     openai.api_version = os.environ.get("OPENAI_API_CHAT_VERSION") 
-    openai.api_key = os.environ.get("OPENAI_API_KEY")        
+    openai.api_key = os.environ.get("OPENAI_API_KEY")    
     
     prompt_question = generate_prompt_cv_reviewer(prompt, data, cv_function, cv_custom_prompt)    
+
+    print("prompt: ", prompt_question) 
+    
     response = openai.Completion.create(
         engine=os.environ.get("OPENAI_API_ENGINE"),
         prompt=prompt_question,
@@ -42,5 +45,8 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
         stop=None      
     )    
     answer = response.choices[0].text    
+    print("answer: ", answer)
+    # remove <|im_end|> from the answer
+    answer = answer.replace("<|im_end|>", "")
     return answer
 

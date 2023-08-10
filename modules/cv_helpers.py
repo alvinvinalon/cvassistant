@@ -82,16 +82,16 @@ def generate_prompt_cv_function(cv_function, cv_custom_prompt=""):
                 " - The CV should contain at least 1 IT relevant certification.\n"   
                 " - The CV should contain any prior experience, even if they're not IT related.\n"  
                 " - The CV should contain educational achievements and awards.\n\n"
-                "Recommend brevity to make the CV easier to read and more appleaing to the readers.\n"
-                "Finally, choose 3 areas found in the CV and rewrite them to improve the content.\n\n"
                 "Here's an example response:\n"
                 "[Well-Written CV]:This CV is well-written and concise. It highlights the most important and relevant achievements.\n"
                 "[Not a Well-Written CV]: This CV is not well-written as it lacks the most important and relevant achievements.\n"
                 "[Areas for Improvement]:\n"
                 "1. [provide recommended rewrite for first area that can be improved].\n"
                 "2. [provide recommended rewrite for second area that can be improved].\n"
-                "3. [provide recommended rewrite for second area that can be improved].\n\n"
-                "[Conclusion]: This is an example conclusion.\n")
+                "3. [provide recommended rewrite for second area that can be improved].\n"
+                "[Conclusion]: This is an example conclusion.\n\n"
+                "Recommend brevity to make the CV easier to read and more appleaing to the readers.\n"
+                "Finally, choose 3 areas found in the CV and rewrite them to improve the content.")
         elif cv_function == "CV Summarizer":
             prompt = (
                     "Below is a CV content. Summarize in bullet points the contents of the CV below.\n"
