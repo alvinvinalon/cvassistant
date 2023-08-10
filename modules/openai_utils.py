@@ -1,5 +1,6 @@
 import openai
 import os
+import tiktoken
 from modules.cv_helpers import *
 
 # The Completion Engine to use for OpenAI
@@ -32,7 +33,9 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
     
     prompt_question = generate_prompt_cv_reviewer(prompt, data, cv_function, cv_custom_prompt)    
 
-    print("prompt: ", prompt_question) 
+    #print("prompt: ", prompt_question) 
+    token_count = count_tokens(prompt_question)
+    print("token count: ", token_count)
     
     response = openai.Completion.create(
         engine=os.environ.get("OPENAI_API_ENGINE"),
@@ -50,3 +53,10 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
     answer = answer.replace("<|im_end|>", "")
     return answer
 
+def count_tokens(text):
+    token_count = tiktoken.count_tokens(text)
+    return token_count
+
+# input_query = "Your input query goes here"
+# token_count = count_tokens(input_query)
+# print("Token count:", token_count)
