@@ -32,10 +32,6 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
     openai.api_key = os.environ.get("OPENAI_API_KEY")    
     
     prompt_question = generate_prompt_cv_reviewer(prompt, data, cv_function, cv_custom_prompt)    
-
-    #print("prompt: ", prompt_question) 
-    token_count = count_tokens(prompt_question)
-    print("token count: ", token_count)
     
     response = openai.Completion.create(
         engine=os.environ.get("OPENAI_API_ENGINE"),
@@ -48,15 +44,9 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
         stop=None      
     )    
     answer = response.choices[0].text    
+    token_count = response['usage']['total_tokens']
+    print("token count: ", token_count) 
     print("answer: ", answer)
     # remove <|im_end|> from the answer
     answer = answer.replace("<|im_end|>", "")
     return answer
-
-def count_tokens(text):
-    token_count = tiktoken.count_tokens(text)
-    return token_count
-
-# input_query = "Your input query goes here"
-# token_count = count_tokens(input_query)
-# print("Token count:", token_count)
