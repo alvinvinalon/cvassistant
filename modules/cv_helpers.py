@@ -29,6 +29,9 @@ def extract_text_from_pdf_pypdf2(source_file):
     for page_num in range(len(reader.pages)):
         page = reader.pages[page_num]
         text += page.extract_text() + "\n"  
+    
+    # Remove special characters from text
+    text = ''.join(e for e in text if e.isalnum() or e.isspace())
     return text
 
 def extract_text_from_pdf(source_file):
@@ -52,6 +55,8 @@ def extract_text_from_pdf(source_file):
             # Combine lines into a single string, separated by newlines
             page_text = '\n'.join(lines)
             text += page_text + "\n\n"
+            
+    text = ''.join(e for e in text if e.isalnum() or e.isspace())
     return text
 
 def image_to_base64(image_path):
@@ -67,44 +72,49 @@ def generate_prompt_cv_function(cv_function, cv_custom_prompt=""):
         if cv_function == "CV Reviewer":       
             # Update this prompt to include the CV Reviewer instructions.
             prompt = (
-                "You are an expert Career Adviser.\n"
-                "Provide detailed feedback and additional recommendations about contents of the CV below. "
-                "State if the CV is well-written or not.\n"                
-                "The owner of the CV is a Sofware Engineer with various experience in the IT industry.\n\n"
-                "Analyze the content of the CV based on the following recommendations:\n"        
-                " - The CV should be clear and concise.\n"
-                " - The CV should highlight the most important and relevant achievements.\n"
-                " - The CV should be written in English.\n"
-                " - The CV should have a Professional Background.\n"
-                " - The CV should be written in a professional tone.\n"        
-                " - The CV should contain at least 1 IT relevant experience.\n"
-                " - The CV should contain at least 2 IT relevant skills.\n"
-                " - The CV should contain at least 1 IT relevant certification.\n"   
-                " - The CV should contain any prior experience, even if they're not IT related.\n"  
-                " - The CV should contain educational achievements and awards.\n\n"
-                "Here's an example response:\n"
-                "[Well-Written CV]:This CV is well-written and concise. It highlights the most important and relevant achievements.\n"
-                "[Not a Well-Written CV]: This CV is not well-written as it lacks the most important and relevant achievements.\n"
-                "[Areas for Improvement]:\n"
-                "1. [provide recommended rewrite for first area that can be improved].\n"
-                "2. [provide recommended rewrite for second area that can be improved].\n"
-                "3. [provide recommended rewrite for second area that can be improved].\n"
-                "[Conclusion]: This is an example conclusion.\n\n"
-                "Recommend brevity to make the CV easier to read and more appleaing to the readers.\n"
-                "Finally, choose 3 areas found in the CV and rewrite them to improve the content.")
+                "You are part of the recruitment team and your job is to review CVs of candidates\n"   
+                "Respond with feedbacks and additional recommendations about contents of the CV below.\n"             
+                "The owner of the CV is a Sofware Engineer with various experience in the IT industry.\n"
+                "Recommend brevity to make the CV easier to read and more appealing to the readers. Choose 3 areas found in the CV and rewrite them to improve the content.\n"
+                "Do not use Markdown or HTML tags in your response.\n"
+                "State if the CV is well-written or not based on the following criteria:\n" 
+                "<Start criteria>\n"       
+                " 1. The CV should be clear and concise.\n"
+                " 2. The CV should highlight the most important and relevant achievements.\n"
+                " 3. The CV should be written in English.\n"
+                " 4. The CV should have a Professional Background.\n"
+                " 5. The CV should be written in a professional tone.\n"        
+                " 6. The CV should contain at least 1 IT relevant experience.\n"
+                " 7. The CV should contain at least 2 IT relevant skills.\n"
+                " 8. The CV should contain at least 1 IT relevant certification.\n"   
+                " 9. The CV should contain any prior experience, even if they're not IT related.\n"  
+                " 10. The CV should contain educational achievements and awards.\n"
+                "<End criteria>")
         elif cv_function == "CV Summarizer":
             prompt = (
-                    "Below is a CV content. Summarize in bullet points the contents of the CV below.\n"
-                    "Include the most important information about the person's CV.\n"
-                    "Use complete sentences and proper grammar.\n"
-                    "Extract all Achievements, Technical Skills, Certifications, and Experience of the person.\n\n"
-                    "Example of response:\n"
-                    "[Summary of Professional Background]:\n"
-                    "[Summary of Technical Skills]:\n"
-                    "1. Technical Skill in bullet list\n"
-                    "2. Certifications in bullet list\n"
-                    "3. Experience in bullet list\n"
-                    "4. [All other relevant information] in bullet list\n\n")
+                "You are part of the recruitment team and your job is to review CVs of candidates.\n"
+                "Your job is to review the contents of the CV and generate a brief summary of the cv contents.\n"
+                "Do not use Markdown or HTML tags in your response.\n"
+                "Example of response:\n"
+                "# Example:\n"
+                "Summary of Professional Background [in less than 50 words]:\n"
+                "The candidate is a Software Engineer with 10 years of experience in the IT industry.\n"
+                "Summary of Technical Skills:\n"
+                "1. Skill 1 \n"
+                "2. Skill 2 \n"
+                "3. Skill 3 \n"
+                "Summary of Certifications:\n"
+                "1. Certifications 1 \n"
+                "2. Certifications 2 \n"
+                "3. Certifications 3 \n"
+                "Summary of Experiences:\n"
+                "1. Experience 1 [less than 50 words] \n"
+                "2. Experience 2 [less than 50 words] \n"
+                "3. Experience 3 [less than 50 words] \n"
+                "Other Notable mentions:\n"
+                "1. Notable mention 1 [less than 50 words] \n"
+                "2. Notable mention 2 [less than 50 words] \n"
+                "# End Example\n\n")
         elif cv_function == "CV Analyzer":
             prompt = """
                     You are evaluating the CV of Software Engineering Candidates.\n                    

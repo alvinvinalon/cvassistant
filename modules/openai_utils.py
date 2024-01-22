@@ -3,17 +3,13 @@ import os
 import tiktoken
 from modules.cv_helpers import *
 
-# The Completion Engine to use for OpenAI
-openai_completion_engine = os.environ.get("OPENAI_API_CHAT_ENGINE_35")
-
-
 # Helper function to generate the prompt the CV Reviewer app
-def generate_prompt_cv_reviewer(prompt, data, function, custom_prompt=""):
+def generate_prompt_cv_reviewer(data, cv_function_prompt):
 
-    cv_function_prompt = generate_prompt_cv_function(function, custom_prompt)
+    prompt=""
     
     prompt = (
-        f"{cv_function_prompt}\n\n" 
+        f"{cv_function_prompt}\n" 
         "# Start of CV contents:\n"  
         f"{data}"
         "# End of CV content:"
@@ -23,20 +19,20 @@ def generate_prompt_cv_reviewer(prompt, data, function, custom_prompt=""):
 
     return prompt
 
-def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, max_tokens=800):
+def generate_openai_responsefor_cv(data, cv_function_prompt, max_tokens=2500):
     
     # Set up OpenAI API credentials
-    openai.api_type = os.environ.get("OPENAI_API_TYPE")
-    openai.api_base = os.environ.get("OPENAI_API_BASE")
-    openai.api_version = os.environ.get("OPENAI_API_CHAT_VERSION") 
-    openai.api_key = os.environ.get("OPENAI_API_KEY")    
-    
-    prompt_question = generate_prompt_cv_reviewer(prompt, data, cv_function, cv_custom_prompt)    
+    openai.api_type = "azure"
+    openai.api_base = st.session_state.azure_openai_url
+    openai.api_key = st.session_state.azure_openai_key   
+    openai.api_version = "2023-03-15-preview"
+        
+    prompt_question = generate_prompt_cv_reviewer( data, cv_function_prompt)    
     
     response = openai.Completion.create(
-        engine=os.environ.get("OPENAI_API_ENGINE"),
+        engine=st.session_state.azure_openai_deployment_model,
         prompt=prompt_question,
-        temperature=0.5,
+        temperature=0.3,
         max_tokens=max_tokens,
         top_p=1,
         frequency_penalty=0,
@@ -46,7 +42,7 @@ def generate_openai_responsefor_cv(prompt, data, cv_function, cv_custom_prompt, 
     answer = response.choices[0].text    
     token_count = response['usage']['total_tokens']
     print("token count: ", token_count) 
-    print("answer: ", answer)
+    #print("answer: ", answer)
     # remove <|im_end|> from the answer
     answer = answer.replace("<|im_end|>", "")
     return answer
